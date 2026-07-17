@@ -44,7 +44,7 @@
           <button
             type="button"
             class="perf-metric-tab border-b border-ink pb-0.5 font-mono text-[11px] font-semibold uppercase tracking-wide text-ink"
-            data-metric="latency"
+            data-perf-series="latency"
             aria-selected="true"
           >
             Latency
@@ -52,7 +52,7 @@
           <button
             type="button"
             class="perf-metric-tab border-b border-transparent pb-0.5 font-mono text-[11px] font-semibold uppercase tracking-wide text-ink-tertiary"
-            data-metric="throughput"
+            data-perf-series="throughput"
             aria-selected="false"
           >
             Throughput
@@ -232,7 +232,7 @@
     function setMetric(next: Metric) {
       metric = next;
       tabs.forEach((tab) => {
-        const on = tab.dataset.metric === next;
+        const on = tab.dataset.perfSeries === next;
         tab.setAttribute("aria-selected", on ? "true" : "false");
         tab.classList.toggle("text-ink", on);
         tab.classList.toggle("border-ink", on);
@@ -244,7 +244,7 @@
 
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
-        const m = tab.dataset.metric as Metric;
+        const m = tab.dataset.perfSeries as Metric;
         if (m) setMetric(m);
       });
     });

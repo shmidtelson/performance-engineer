@@ -14,7 +14,7 @@ const { value, suffix = "", prefix = "", decimals = 0, label, detail } = Astro.p
 <div class="min-w-0">
   <p
     class="font-mono text-2xl font-semibold tracking-tight text-ink md:text-3xl"
-    data-metric
+    data-metric-stat
     data-value={value}
     data-decimals={decimals}
     data-prefix={prefix}
@@ -28,7 +28,8 @@ const { value, suffix = "", prefix = "", decimals = 0, label, detail } = Astro.p
 
 <script>
   function animateMetrics() {
-    const nodes = document.querySelectorAll<HTMLElement>("[data-metric]");
+    // Prefer data-metric-stat so we don't collide with PerfDemo tab buttons (data-metric).
+    const nodes = document.querySelectorAll<HTMLElement>("[data-metric-stat]");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const run = (el: HTMLElement) => {
@@ -37,7 +38,8 @@ const { value, suffix = "", prefix = "", decimals = 0, label, detail } = Astro.p
       const decimals = Number(el.dataset.decimals || 0);
       const prefix = el.dataset.prefix || "";
       const suffix = el.dataset.suffix || "";
-      if (reduced || Number.isNaN(target)) {
+      if (Number.isNaN(target)) return;
+      if (reduced) {
         el.textContent = `${prefix}${decimals ? target.toFixed(decimals) : target}${suffix}`;
         return;
       }
