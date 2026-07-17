@@ -34,3 +34,11 @@ Defaults to **system** (`prefers-color-scheme`). Header toggle cycles: system â†
 npm run build
 npm run preview
 ```
+
+## Deploy
+
+Pushes to `master` build and publish via GitHub Actions â†’ GitHub Pages.
+
+- Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+- Site URL (after Pages is live): https://shmidtelson.github.io/performance-engineer/
+- Canonical domain (configured in Astro): https://sapezhko.com
