@@ -1,0 +1,27 @@
+---
+import MetricStat from "./MetricStat.astro";
+import { proofMetrics } from "../data/site";
+---
+
+<section class="border-b border-line" aria-label="Selected outcomes">
+  <div class="mx-auto flex max-w-content flex-col gap-8 px-5 py-12 md:flex-row md:items-stretch md:justify-between md:gap-0 md:px-8 md:py-14">
+    {proofMetrics.map((m, i) => (
+      <div class:list={[
+        "reveal md:flex-1 md:px-6",
+        i > 0 && "md:border-l md:border-line",
+        i === 1 && "reveal-delay-1",
+        i === 2 && "reveal-delay-2",
+        i === 3 && "reveal-delay-3",
+      ]}>
+        <MetricStat
+          value={m.value}
+          suffix={m.suffix}
+          prefix={m.prefix}
+          decimals={m.decimals}
+          label={m.label}
+          detail={m.detail}
+        />
+      </div>
+    ))}
+  </div>
+</section>

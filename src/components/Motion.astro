@@ -1,0 +1,57 @@
+---
+/** IntersectionObserver reveals + subtle magnetic hover on CTAs */
+---
+
+<script>
+  function initReveals() {
+    const nodes = document.querySelectorAll<HTMLElement>(".reveal:not(.is-in)");
+    if (!nodes.length) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      nodes.forEach((n) => n.classList.add("is-in"));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          (e.target as HTMLElement).classList.add("is-in");
+          io.unobserve(e.target);
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+    );
+
+    nodes.forEach((n) => io.observe(n));
+  }
+
+  function initMagnetic() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    document.querySelectorAll<HTMLElement>(".btn-pulse").forEach((btn) => {
+      if (btn.dataset.magnetic === "1") return;
+      btn.dataset.magnetic = "1";
+
+      btn.addEventListener("pointermove", (ev) => {
+        const r = btn.getBoundingClientRect();
+        const x = ev.clientX - r.left - r.width / 2;
+        const y = ev.clientY - r.top - r.height / 2;
+        btn.style.transform = `translate(${x * 0.12}px, ${y * 0.18}px) scale(1.03)`;
+      });
+
+      btn.addEventListener("pointerleave", () => {
+        btn.style.transform = "";
+      });
+    });
+  }
+
+  function boot() {
+    initReveals();
+    initMagnetic();
+  }
+
+  boot();
+  document.addEventListener("astro:page-load", boot);
+</script>

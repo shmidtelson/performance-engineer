@@ -1,0 +1,33 @@
+---
+import { forYouIf } from "../data/site";
+---
+
+<section class="border-b border-line" id="fit">
+  <div class="reveal mx-auto max-w-content px-5 py-20 md:px-8 md:py-28">
+    <p class="text-sm font-medium text-ink-tertiary">Fit</p>
+    <h2 class="font-display mt-3 max-w-2xl text-3xl text-ink md:text-4xl">
+      This is for you if performance is already a business problem.
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-secondary">
+      Self-qualify in thirty seconds. The diagnostic is free — time is reserved for teams who feel the pain in production.
+    </p>
+    <div class="mt-12 grid gap-12 border-t border-line pt-10 md:grid-cols-2 md:gap-16">
+      <div>
+        <h3 class="text-sm font-semibold text-ok">For you if</h3>
+        <ul class="mt-5 space-y-4">
+          {forYouIf.yes.map((item) => (
+            <li class="border-b border-line pb-4 text-ink-secondary last:border-0">{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-ink-tertiary">Not for you if</h3>
+        <ul class="mt-5 space-y-4">
+          {forYouIf.no.map((item) => (
+            <li class="border-b border-line pb-4 text-ink-secondary last:border-0">{item}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

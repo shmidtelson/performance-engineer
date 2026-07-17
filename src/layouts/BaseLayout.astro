@@ -1,0 +1,89 @@
+---
+import "../styles/global.css";
+import Motion from "../components/Motion.astro";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${site.name} · Performance Engineer for SaaS & E-commerce`,
+  description = "Free 30-min diagnostic call. Cut latency, remove bottlenecks, and make critical flows fast and reliable.",
+} = Astro.props;
+
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : Astro.url.href;
+const ogImage = Astro.site
+  ? new URL("/og.svg", Astro.site).href
+  : "/og.svg";
+
+const themeBoot = `(function(){try{var k='pc-theme';var p=localStorage.getItem(k);if(p!=='light'&&p!=='dark'&&p!=='system')p='system';var dark=p==='dark'||(p==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',dark);document.documentElement.dataset.theme=p;}catch(e){}})();`;
+---
+
+<!doctype html>
+<html lang="en" data-theme="system">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    <meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)" />
+    <script is:inline set:html={themeBoot} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      name: `${site.name} — Performance Engineering`,
+      description,
+      url: site.website,
+      email: site.email,
+      areaServed: "Worldwide",
+      provider: {
+        "@type": "Person",
+        name: site.name,
+        jobTitle: site.role,
+        url: site.linkedin,
+        email: site.email,
+      },
+      offers: {
+        "@type": "Offer",
+        name: "Free 30-minute diagnostic call",
+        price: "0",
+        priceCurrency: "EUR",
+        url: site.bookingUrl,
+      },
+    })} />
+  </head>
+  <body class="min-h-dvh">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+    <slot />
+    <Motion />
+  </body>
+</html>

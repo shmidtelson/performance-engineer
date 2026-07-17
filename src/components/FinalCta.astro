@@ -1,0 +1,16 @@
+---
+import CtaButton from "./CtaButton.astro";
+import { site } from "../data/site";
+---
+
+<section class="border-b border-line">
+  <div class="reveal mx-auto max-w-content px-5 py-20 md:px-8 md:py-28">
+    <h2 class="font-display max-w-2xl text-3xl text-ink md:text-4xl">
+      Ready to find what’s actually slowing you down?
+    </h2>
+    <p class="mt-4 max-w-xl text-ink-secondary">{site.ctaSub}</p>
+    <div class="mt-8">
+      <CtaButton href="#book" pulse>{site.cta}</CtaButton>
+    </div>
+  </div>
+</section>

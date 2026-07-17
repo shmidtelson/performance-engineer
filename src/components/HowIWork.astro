@@ -1,0 +1,24 @@
+---
+import { processSteps } from "../data/site";
+---
+
+<section class="border-b border-line" id="how">
+  <div class="reveal mx-auto max-w-content px-5 py-20 md:px-8 md:py-28">
+    <p class="text-sm font-medium text-ink-tertiary">How I work</p>
+    <h2 class="font-display mt-3 max-w-2xl text-3xl text-ink md:text-4xl">
+      Diagnose. Prioritize. Harden.
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-secondary">
+      Same loop whether the bottleneck is Core Web Vitals, a hot Postgres query, or a queue that melts under peak traffic.
+    </p>
+    <ol class="mt-14 border-t border-line">
+      {processSteps.map((step) => (
+        <li class="grid gap-2 border-b border-line py-8 md:grid-cols-[5rem_1fr_1.4fr] md:gap-10 md:py-10">
+          <p class="font-mono text-sm text-ink-tertiary">{step.n}</p>
+          <h3 class="font-display text-xl text-ink md:text-2xl">{step.title}</h3>
+          <p class="leading-relaxed text-ink-secondary md:pt-1">{step.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: var(--pc-bg);
+  --color-bg-elevated: var(--pc-bg-elevated);
+  --color-bg-muted: var(--pc-bg-muted);
+  --color-ink: var(--pc-ink);
+  --color-ink-secondary: var(--pc-ink-secondary);
+  --color-ink-tertiary: var(--pc-ink-tertiary);
+  --color-line: var(--pc-line);
+  --color-accent: var(--pc-accent);
+  --color-accent-hover: var(--pc-accent-hover);
+  --color-accent-soft: var(--pc-accent-soft);
+  --color-signal: var(--pc-signal);
+  --color-ok: var(--pc-ok);
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", "Times New Roman", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --max-width-content: 68rem;
+}
+
+:root {
+  --pc-bg: #faf9f6;
+  --pc-bg-elevated: #ffffff;
+  --pc-bg-muted: #f0eee8;
+  --pc-ink: #141414;
+  --pc-ink-secondary: #4a4a46;
+  --pc-ink-tertiary: #7a7870;
+  --pc-line: #e2dfd6;
+  --pc-accent: #0a6e5c;
+  --pc-accent-hover: #085546;
+  --pc-accent-soft: #d8efe9;
+  --pc-signal: #9a6700;
+  --pc-ok: #1b6b3a;
+  color-scheme: light;
+}
+
+html.dark {
+  --pc-bg: #111110;
+  --pc-bg-elevated: #1a1a18;
+  --pc-bg-muted: #222220;
+  --pc-ink: #f2f0ea;
+  --pc-ink-secondary: #b0aea6;
+  --pc-ink-tertiary: #85837a;
+  --pc-line: #2e2e2a;
+  --pc-accent: #3dba9c;
+  --pc-accent-hover: #6fd4b8;
+  --pc-accent-soft: #14352e;
+  --pc-signal: #d4a017;
+  --pc-ok: #5ecf87;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+  }
+
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  ::selection {
+    @apply bg-accent-soft text-ink;
+  }
+
+  h1,
+  h2,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+  }
+}
+
+@layer utilities {
+  .btn-modern {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .rule {
+    @apply border-t border-line;
+  }
+
+  /* —— Scroll reveal —— */
+  .reveal {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    filter: blur(4px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .reveal-delay-1 {
+    transition-delay: 0.08s;
+  }
+  .reveal-delay-2 {
+    transition-delay: 0.16s;
+  }
+  .reveal-delay-3 {
+    transition-delay: 0.24s;
+  }
+  .reveal-delay-4 {
+    transition-delay: 0.32s;
+  }
+
+  /* —— CTA pulse (important buttons) —— */
+  .btn-pulse {
+    position: relative;
+    isolation: isolate;
+    animation: btn-breathe 2.2s ease-in-out infinite;
+  }
+
+  .btn-pulse::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    animation: btn-ring 2.2s ease-out infinite;
+  }
+
+  .btn-pulse:hover,
+  .btn-pulse:focus-visible {
+    animation: none;
+  }
+
+  .btn-pulse:hover::before,
+  .btn-pulse:focus-visible::before {
+    animation: none;
+    opacity: 0;
+  }
+
+  /* Shine sweep on primary CTAs (::after — separate from pulse ring) */
+  .btn-shine {
+    overflow: hidden;
+  }
+
+  .btn-shine > .btn-shine-beam {
+    position: absolute;
+    inset: -40% -60%;
+    z-index: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgb(255 255 255 / 0.28) 50%,
+      transparent 60%
+    );
+    transform: translateX(-30%) rotate(8deg);
+    animation: btn-shine 3.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  html.dark .btn-shine > .btn-shine-beam {
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgb(255 255 255 / 0.14) 50%,
+      transparent 60%
+    );
+  }
+
+  .btn-shine:hover > .btn-shine-beam {
+    animation-duration: 1.2s;
+  }
+
+  /* Metric glow pop */
+  .metric-pop {
+    animation: metric-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Floating accent orbs behind hero content */
+  .wow-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(48px);
+    pointer-events: none;
+    animation: orb-float 8s ease-in-out infinite;
+  }
+}
+
+@keyframes btn-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+@keyframes btn-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--pc-accent) 55%, transparent);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 0 0 0 18px color-mix(in srgb, var(--pc-accent) 0%, transparent);
+    opacity: 0;
+  }
+}
+
+@keyframes btn-shine {
+  0%,
+  55% {
+    transform: translateX(-40%) rotate(8deg);
+  }
+  100% {
+    transform: translateX(40%) rotate(8deg);
+  }
+}
+
+@keyframes metric-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes orb-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(12px, -18px) scale(1.08);
+  }
+}
+
+@keyframes node-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+}

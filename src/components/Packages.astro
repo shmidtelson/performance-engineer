@@ -1,0 +1,67 @@
+---
+import CtaButton from "./CtaButton.astro";
+import { packages } from "../data/site";
+---
+
+<section class="border-b border-line" id="packages">
+  <div class="reveal mx-auto max-w-content px-5 py-20 md:px-8 md:py-28">
+    <p class="text-sm font-medium text-ink-tertiary">After the call</p>
+    <h2 class="font-display mt-3 max-w-2xl text-3xl text-ink md:text-4xl">
+      Clear paths — no retainer pressure on day one.
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-secondary">
+      The diagnostic is free. Paid work is scoped only if there’s a fit and a measurable outcome.
+    </p>
+
+    <div class="mt-12 grid gap-6 lg:grid-cols-3">
+      {packages.map((p, i) => (
+        <article
+          class:list={[
+            "reveal flex flex-col border border-line p-6",
+            p.featured && "bg-ink text-bg border-ink",
+            !p.featured && "bg-bg-elevated",
+            i === 1 && "reveal-delay-1",
+            i === 2 && "reveal-delay-2",
+          ]}
+        >
+          <p
+            class:list={[
+              "font-mono text-[11px] uppercase tracking-[0.12em]",
+              p.featured ? "text-bg/50" : "text-ink-tertiary",
+            ]}
+          >
+            {p.price}
+          </p>
+          <h3 class:list={["font-display mt-3 text-2xl", p.featured ? "text-bg" : "text-ink"]}>
+            {p.name}
+          </h3>
+          <p class:list={["mt-3 text-sm leading-relaxed", p.featured ? "text-bg/65" : "text-ink-secondary"]}>
+            {p.blurb}
+          </p>
+          <ul class="mt-6 flex-1 space-y-2">
+            {p.includes.map((item) => (
+              <li
+                class:list={[
+                  "border-b pb-2 text-sm last:border-0",
+                  p.featured ? "border-bg/15 text-bg/70" : "border-line text-ink-secondary",
+                ]}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+          <div class="mt-6">
+            <CtaButton
+              href={p.href}
+              variant={p.featured ? "inverse" : "primary"}
+              pulse={p.featured}
+              arrow={false}
+            >
+              {p.cta}
+            </CtaButton>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

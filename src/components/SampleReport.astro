@@ -1,0 +1,57 @@
+---
+import CtaButton from "./CtaButton.astro";
+import { sampleReport, site } from "../data/site";
+---
+
+<section class="border-b border-line bg-bg-muted/40" id="sample-report">
+  <div class="reveal mx-auto max-w-content px-5 py-20 md:px-8 md:py-28">
+    <p class="text-sm font-medium text-ink-tertiary">Sample deliverable</p>
+    <h2 class="font-display mt-3 max-w-2xl text-3xl text-ink md:text-4xl">
+      {sampleReport.title}
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-secondary">{sampleReport.subtitle}</p>
+
+    <article class="mt-10 border border-line bg-bg-elevated">
+      <header class="border-b border-line px-5 py-4 md:px-6">
+        <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-tertiary">Diagnostic summary</p>
+        <p class="mt-1 font-medium text-ink">{sampleReport.product}</p>
+      </header>
+
+      <div class="divide-y divide-line">
+        {sampleReport.findings.map((f) => (
+          <div class="grid gap-2 px-5 py-5 md:grid-cols-[4rem_1fr] md:gap-6 md:px-6">
+            <p
+              class:list={[
+                "font-mono text-xs font-semibold",
+                f.severity === "P0" && "text-signal",
+                f.severity === "P1" && "text-accent",
+                f.severity === "P2" && "text-ink-tertiary",
+              ]}
+            >
+              {f.severity}
+            </p>
+            <div>
+              <h3 class="font-medium text-ink">{f.title}</h3>
+              <p class="mt-1 text-sm leading-relaxed text-ink-secondary">{f.detail}</p>
+              <p class="mt-2 text-sm text-ink-tertiary">Impact: {f.impact}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="border-t border-line px-5 py-5 md:px-6">
+        <p class="text-sm font-semibold text-ink">Suggested next steps</p>
+        <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-ink-secondary">
+          {sampleReport.nextSteps.map((s) => (
+            <li>{s}</li>
+          ))}
+        </ol>
+      </div>
+    </article>
+
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <CtaButton href="#book" pulse>Get a priority list for your product</CtaButton>
+      <p class="text-sm text-ink-tertiary">{site.calendlyHint}</p>
+    </div>
+  </div>
+</section>

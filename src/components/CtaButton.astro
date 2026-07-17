@@ -1,0 +1,74 @@
+---
+interface Props {
+  href: string;
+  variant?: "primary" | "secondary" | "ghost" | "inverse";
+  size?: "sm" | "md";
+  class?: string;
+  external?: boolean;
+  /** Show trailing arrow on primary / inverse */
+  arrow?: boolean;
+  /** Strong pulse + shine — for main conversion CTAs */
+  pulse?: boolean;
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  class: className = "",
+  external = false,
+  arrow = variant === "primary" || variant === "inverse",
+  pulse = false,
+} = Astro.props;
+
+const sizes = {
+  sm: "h-9 gap-1.5 px-3.5 text-sm",
+  md: "h-11 gap-2 px-5 text-[0.9375rem]",
+} as const;
+
+const variants = {
+  primary:
+    "border border-ink bg-ink text-bg hover:bg-transparent hover:text-ink dark:border-bg dark:bg-bg dark:text-ink dark:hover:bg-transparent dark:hover:text-bg",
+  secondary:
+    "border border-line bg-transparent text-ink hover:border-ink hover:-translate-y-0.5",
+  ghost: "bg-transparent text-ink-secondary hover:text-ink",
+  inverse:
+    "border border-bg bg-bg text-ink hover:bg-transparent hover:text-bg",
+} as const;
+
+const base =
+  "group btn-modern relative inline-flex items-center justify-center font-medium tracking-[-0.01em] transition-[transform,background-color,color,border-color,box-shadow] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg active:scale-[0.98]";
+---
+
+<a
+  href={href}
+  class:list={[
+    base,
+    sizes[size],
+    variants[variant],
+    pulse && "btn-pulse btn-shine",
+    className,
+  ]}
+  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+>
+  {pulse && <span class="btn-shine-beam" aria-hidden="true" />}
+  <span class="relative z-[1]">
+    <slot />
+  </span>
+  {arrow && (
+    <svg
+      class="relative z-[1] size-4 shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 8h10M9 4l4 4-4 4"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  )}
+</a>

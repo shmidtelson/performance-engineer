@@ -1,0 +1,41 @@
+---
+import CtaButton from "./CtaButton.astro";
+import PerfDemo from "./PerfDemo.astro";
+import NetworkAtmosphere from "./NetworkAtmosphere.astro";
+import { site } from "../data/site";
+---
+
+<section id="top" class="relative overflow-hidden border-b border-line">
+  <NetworkAtmosphere />
+
+  <div class="relative mx-auto max-w-content px-5 pt-14 pb-16 md:px-8 md:pt-20 md:pb-24 lg:pt-24">
+    <div class="max-w-3xl">
+      <p class="reveal reveal-delay-1 mb-5 text-sm font-medium text-ink-secondary">
+        {site.name}
+        <span class="mx-2 text-line">/</span>
+        Performance Engineer · {site.years} years
+      </p>
+      <h1 class="reveal reveal-delay-2 font-display text-balance text-[2.35rem] leading-[1.12] text-ink md:text-5xl lg:text-[3.5rem] lg:leading-[1.08]">
+        If your product feels slow, users don’t wait — they leave.
+      </h1>
+      <p class="reveal reveal-delay-3 mt-6 max-w-xl text-pretty text-lg leading-relaxed text-ink-secondary md:text-xl">
+        {site.tagline}
+      </p>
+      <p class="reveal reveal-delay-3 mt-3 max-w-xl text-base leading-relaxed text-ink-tertiary">
+        I don’t stop at recommendations. I find what’s actually slow, prioritize by business impact, and help ship the fix.
+      </p>
+      <div class="reveal reveal-delay-4 mt-9 flex flex-wrap items-center gap-3">
+        <CtaButton href="#book" pulse>{site.cta}</CtaButton>
+        <CtaButton href="#cases" variant="secondary" arrow={false}>See proof</CtaButton>
+      </div>
+      <p class="reveal reveal-delay-4 mt-4 text-sm text-ink-tertiary">{site.ctaSub}</p>
+    </div>
+
+    <div class="reveal reveal-delay-3 mt-14 max-w-xl md:mt-16 md:ml-auto">
+      <p class="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-ink-tertiary">
+        Try it — watch the numbers move
+      </p>
+      <PerfDemo />
+    </div>
+  </div>
+</section>

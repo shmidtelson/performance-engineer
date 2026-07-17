@@ -1,0 +1,268 @@
+---
+/**
+ * Interactive proof widget — editorial panel, not fake macOS chrome.
+ */
+---
+
+<div
+  id="perf-demo"
+  class="border border-line bg-bg-elevated"
+  data-state="before"
+>
+  <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3 md:px-5">
+    <p class="font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-ink-tertiary">
+      Production signals
+    </p>
+    <span
+      id="perf-demo-badge"
+      class="font-mono text-[11px] font-semibold uppercase tracking-wide text-signal"
+    >
+      before
+    </span>
+  </div>
+
+  <div class="p-4 md:p-5">
+    <div class="grid grid-cols-2 gap-6 border-b border-line pb-5">
+      <div>
+        <p class="text-xs text-ink-tertiary">p95 latency</p>
+        <p class="mt-1 font-mono text-2xl font-semibold tracking-tight text-ink tabular-nums">
+          <span id="perf-latency">820</span><span class="text-sm font-medium text-ink-tertiary"> ms</span>
+        </p>
+      </div>
+      <div>
+        <p class="text-xs text-ink-tertiary">throughput</p>
+        <p class="mt-1 font-mono text-2xl font-semibold tracking-tight text-ink tabular-nums">
+          <span id="perf-throughput">140</span><span class="text-sm font-medium text-ink-tertiary"> rps</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <div class="mb-3 flex items-end justify-between gap-3">
+        <p class="text-xs text-ink-tertiary" id="perf-chart-label">Latency over time</p>
+        <div class="flex gap-4" role="tablist" aria-label="Metric">
+          <button
+            type="button"
+            class="perf-metric-tab border-b border-ink pb-0.5 font-mono text-[11px] font-semibold uppercase tracking-wide text-ink"
+            data-metric="latency"
+            aria-selected="true"
+          >
+            Latency
+          </button>
+          <button
+            type="button"
+            class="perf-metric-tab border-b border-transparent pb-0.5 font-mono text-[11px] font-semibold uppercase tracking-wide text-ink-tertiary"
+            data-metric="throughput"
+            aria-selected="false"
+          >
+            Throughput
+          </button>
+        </div>
+      </div>
+
+      <svg
+        id="perf-chart"
+        class="h-28 w-full text-accent"
+        viewBox="0 0 320 96"
+        fill="none"
+        role="img"
+        aria-label="Performance chart"
+      >
+        <defs>
+          <linearGradient id="perf-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="currentColor" stop-opacity="0.14"></stop>
+            <stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+        <path id="perf-area" fill="url(#perf-fill)" d=""></path>
+        <path
+          id="perf-line"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d=""
+        >
+        </path>
+      </svg>
+    </div>
+
+    <button
+      type="button"
+      id="perf-optimize"
+      class="group btn-modern mt-4 inline-flex h-11 w-full items-center justify-center gap-2 border border-ink bg-ink font-medium tracking-[-0.01em] text-bg transition-[transform,background-color,color] duration-200 hover:bg-transparent hover:text-ink active:scale-[0.99] dark:border-bg dark:bg-bg dark:text-ink dark:hover:bg-transparent dark:hover:text-bg"
+    >
+      <span id="perf-optimize-label">Apply optimization</span>
+      <svg class="size-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        ></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  type Metric = "latency" | "throughput";
+
+  const SERIES = {
+    latency: {
+      before: [0.82, 0.75, 0.9, 0.7, 0.95, 0.88, 0.78, 0.92, 0.85, 0.98, 0.8, 0.88],
+      after: [0.35, 0.28, 0.32, 0.25, 0.3, 0.22, 0.27, 0.24, 0.2, 0.26, 0.18, 0.22],
+      label: "Latency over time",
+      valueBefore: 820,
+      valueAfter: 180,
+    },
+    throughput: {
+      before: [0.25, 0.28, 0.22, 0.3, 0.26, 0.24, 0.32, 0.28, 0.3, 0.27, 0.29, 0.31],
+      after: [0.55, 0.62, 0.7, 0.68, 0.78, 0.82, 0.85, 0.88, 0.9, 0.92, 0.94, 0.96],
+      label: "Throughput over time",
+      valueBefore: 140,
+      valueAfter: 520,
+    },
+  };
+
+  const W = 320;
+  const H = 96;
+  const PAD = 4;
+
+  function lerp(a: number, b: number, t: number) {
+    return a + (b - a) * t;
+  }
+
+  function mixSeries(a: number[], b: number[], t: number) {
+    return a.map((v, i) => lerp(v, b[i], t));
+  }
+
+  function toPath(values: number[]) {
+    const pts = values.map((v, i) => {
+      const x = PAD + (i / (values.length - 1)) * (W - PAD * 2);
+      const y = PAD + (1 - v) * (H - PAD * 2);
+      return [x, y] as const;
+    });
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1];
+      const [x1, y1] = pts[i];
+      const cx = (x0 + x1) / 2;
+      d += ` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`;
+    }
+    const area = `${d} L ${pts[pts.length - 1][0]} ${H} L ${pts[0][0]} ${H} Z`;
+    return { line: d, area };
+  }
+
+  function easeOutCubic(t: number) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function initPerfDemo() {
+    const root = document.getElementById("perf-demo");
+    const line = document.getElementById("perf-line");
+    const area = document.getElementById("perf-area");
+    const latencyEl = document.getElementById("perf-latency");
+    const throughputEl = document.getElementById("perf-throughput");
+    const badge = document.getElementById("perf-demo-badge");
+    const chartLabel = document.getElementById("perf-chart-label");
+    const optimizeBtn = document.getElementById("perf-optimize");
+    const optimizeLabel = document.getElementById("perf-optimize-label");
+    const tabs = document.querySelectorAll<HTMLButtonElement>(".perf-metric-tab");
+
+    if (!root || !line || !area || !latencyEl || !throughputEl || !optimizeBtn) return;
+
+    let metric: Metric = "latency";
+    let progress = 0;
+    let animating = false;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function paint(t: number) {
+      const s = SERIES[metric];
+      const values = mixSeries(s.before, s.after, t);
+      const { line: d, area: a } = toPath(values);
+      line!.setAttribute("d", d);
+      area!.setAttribute("d", a);
+
+      const lat = Math.round(lerp(SERIES.latency.valueBefore, SERIES.latency.valueAfter, t));
+      const thr = Math.round(lerp(SERIES.throughput.valueBefore, SERIES.throughput.valueAfter, t));
+      latencyEl!.textContent = String(lat);
+      throughputEl!.textContent = String(thr);
+      latencyEl!.classList.toggle("text-ok", t > 0.7);
+      throughputEl!.classList.toggle("text-ok", t > 0.7);
+
+      const after = t > 0.85;
+      root!.dataset.state = after ? "after" : "before";
+      if (badge) {
+        badge.textContent = after ? "after" : "before";
+        badge.className = after
+          ? "font-mono text-[11px] font-semibold uppercase tracking-wide text-ok"
+          : "font-mono text-[11px] font-semibold uppercase tracking-wide text-signal";
+      }
+      if (optimizeLabel) optimizeLabel.textContent = after ? "Reset demo" : "Apply optimization";
+      if (chartLabel) chartLabel.textContent = s.label;
+    }
+
+    function animateTo(target: number) {
+      if (animating) return;
+      const from = progress;
+      if (Math.abs(from - target) < 0.01) {
+        progress = target;
+        paint(progress);
+        return;
+      }
+      if (reduced) {
+        progress = target;
+        paint(progress);
+        return;
+      }
+      animating = true;
+      const duration = 900;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const u = Math.min(1, (now - start) / duration);
+        progress = lerp(from, target, easeOutCubic(u));
+        paint(progress);
+        if (u < 1) requestAnimationFrame(tick);
+        else {
+          progress = target;
+          paint(progress);
+          animating = false;
+        }
+      };
+      requestAnimationFrame(tick);
+    }
+
+    function setMetric(next: Metric) {
+      metric = next;
+      tabs.forEach((tab) => {
+        const on = tab.dataset.metric === next;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.classList.toggle("text-ink", on);
+        tab.classList.toggle("border-ink", on);
+        tab.classList.toggle("border-transparent", !on);
+        tab.classList.toggle("text-ink-tertiary", !on);
+      });
+      paint(progress);
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const m = tab.dataset.metric as Metric;
+        if (m) setMetric(m);
+      });
+    });
+
+    optimizeBtn.addEventListener("click", () => {
+      animateTo(progress > 0.5 ? 0 : 1);
+    });
+
+    document.querySelectorAll('a[href="#book"]').forEach((el) => {
+      el.addEventListener("click", () => {
+        if (progress < 0.9) animateTo(1);
+      });
+    });
+
+    setMetric("latency");
+    paint(0);
+  }
+
+  initPerfDemo();
+  document.addEventListener("astro:page-load", initPerfDemo);
+</script>

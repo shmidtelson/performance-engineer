@@ -1,0 +1,50 @@
+---
+import { nextSteps, site } from "../data/site";
+---
+
+<section class="border-b border-line" id="about">
+  <div class="reveal mx-auto grid max-w-content gap-10 px-5 py-20 md:grid-cols-[auto_1fr] md:items-start md:gap-14 md:px-8 md:py-28">
+    <div
+      class="flex size-28 items-center justify-center border border-line bg-bg-muted font-display text-3xl text-ink md:size-36 md:text-4xl"
+      aria-hidden="true"
+    >
+      RS
+    </div>
+    <div>
+      <p class="text-sm font-medium text-ink-tertiary">About</p>
+      <h2 class="font-display mt-3 text-3xl text-ink md:text-4xl">{site.name}</h2>
+      <p class="mt-2 text-ink-secondary">
+        {site.role} · {site.location} · {site.years} years in production
+      </p>
+      <p class="mt-5 max-w-2xl leading-relaxed text-ink-secondary">
+        I work with teams dealing with slow applications, latency spikes, unstable performance under load, or systems that became harder to scale after rapid growth, legacy complexity, or AI-assisted development.
+      </p>
+      <p class="mt-4 max-w-2xl leading-relaxed text-ink-secondary">
+        Background across high-load backends, IoT reliability, Core Web Vitals, CI/CD, and production troubleshooting — including OTUS Highload Architect training.
+      </p>
+
+      <ol class="mt-8 max-w-xl space-y-3 border-t border-line pt-6">
+        <p class="text-sm font-semibold text-ink">What happens next</p>
+        {nextSteps.map((s) => (
+          <li class="flex gap-4 text-sm">
+            <span class="font-mono text-ink-tertiary">{s.n}</span>
+            <span>
+              <span class="font-medium text-ink">{s.title}</span>
+              <span class="text-ink-secondary"> — {s.body}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+
+      <div class="mt-6 flex flex-wrap gap-6 text-sm font-medium">
+        <a href={site.linkedin} class="text-ink underline decoration-line underline-offset-4 hover:decoration-accent" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+        <a href={site.github} class="text-ink underline decoration-line underline-offset-4 hover:decoration-accent" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+        <a href={`mailto:${site.email}`} class="text-ink underline decoration-line underline-offset-4 hover:decoration-accent">{site.email}</a>
+      </div>
+    </div>
+  </div>
+</section>
