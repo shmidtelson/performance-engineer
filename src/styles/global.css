@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Theme toggle sets html.dark — don’t use prefers-color-scheme for dark: */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-bg: var(--pc-bg);
   --color-bg-elevated: var(--pc-bg-elevated);
