@@ -134,10 +134,11 @@ html.dark {
   }
 
   /* —— CTA pulse (important buttons) —— */
+  /* Ring/shine animate on ::before / child only — never transform the
+     hit-target itself (that fights :hover and makes styles flicker). */
   .btn-pulse {
     position: relative;
     isolation: isolate;
-    animation: btn-breathe 2.2s ease-in-out infinite;
   }
 
   .btn-pulse::before {
@@ -148,11 +149,6 @@ html.dark {
     border-radius: inherit;
     pointer-events: none;
     animation: btn-ring 2.2s ease-out infinite;
-  }
-
-  .btn-pulse:hover,
-  .btn-pulse:focus-visible {
-    animation: none;
   }
 
   .btn-pulse:hover::before,
@@ -206,16 +202,6 @@ html.dark {
     filter: blur(48px);
     pointer-events: none;
     animation: orb-float 8s ease-in-out infinite;
-  }
-}
-
-@keyframes btn-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.035);
   }
 }
 

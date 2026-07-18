@@ -1,5 +1,5 @@
 ---
-/** IntersectionObserver reveals + subtle magnetic hover on CTAs */
+/** IntersectionObserver reveals for .reveal sections */
 ---
 
 <script>
@@ -26,32 +26,6 @@
     nodes.forEach((n) => io.observe(n));
   }
 
-  function initMagnetic() {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-
-    document.querySelectorAll<HTMLElement>(".btn-pulse").forEach((btn) => {
-      if (btn.dataset.magnetic === "1") return;
-      btn.dataset.magnetic = "1";
-
-      btn.addEventListener("pointermove", (ev) => {
-        const r = btn.getBoundingClientRect();
-        const x = ev.clientX - r.left - r.width / 2;
-        const y = ev.clientY - r.top - r.height / 2;
-        btn.style.transform = `translate(${x * 0.12}px, ${y * 0.18}px) scale(1.03)`;
-      });
-
-      btn.addEventListener("pointerleave", () => {
-        btn.style.transform = "";
-      });
-    });
-  }
-
-  function boot() {
-    initReveals();
-    initMagnetic();
-  }
-
-  boot();
-  document.addEventListener("astro:page-load", boot);
+  initReveals();
+  document.addEventListener("astro:page-load", initReveals);
 </script>
