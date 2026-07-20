@@ -7,7 +7,7 @@ interface Props {
   external?: boolean;
   /** Show trailing arrow on primary / inverse */
   arrow?: boolean;
-  /** Strong pulse + shine — for main conversion CTAs */
+  /** Soft pulse ring — conversion CTAs */
   pulse?: boolean;
 }
 
@@ -20,6 +20,8 @@ const {
   arrow = variant === "primary" || variant === "inverse",
   pulse = false,
 } = Astro.props;
+
+const isPrimary = variant === "primary" || variant === "inverse";
 
 const sizes = {
   sm: "h-9 gap-1.5 px-3.5 text-sm",
@@ -39,7 +41,7 @@ const variants = {
 } as const;
 
 const base =
-  "group btn-modern relative inline-flex items-center justify-center font-medium tracking-[-0.01em] transition-[transform,background-color,color,border-color,box-shadow] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg active:scale-[0.98]";
+  "group btn-modern relative inline-flex items-center justify-center overflow-hidden font-medium tracking-[-0.01em] transition-[transform,background-color,color,border-color,box-shadow] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg active:scale-[0.98]";
 ---
 
 <a
@@ -48,12 +50,14 @@ const base =
     base,
     sizes[size],
     variants[variant],
-    pulse && "btn-pulse btn-shine",
+    isPrimary && "btn-shine",
+    variant === "inverse" && "btn-shine-light",
+    pulse && "btn-pulse",
     className,
   ]}
   {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
 >
-  {pulse && <span class="btn-shine-beam" aria-hidden="true" />}
+  {isPrimary && <span class="btn-shine-beam" aria-hidden="true" />}
   <span class="relative z-[1]">
     <slot />
   </span>
